@@ -2,11 +2,11 @@ import React from "react";
 import { useCartContext } from "../CartContext";
 import { Product } from "../shared/types";
 
-interface ProductProps {
+export interface ProductCardProps {
   datum: Product;
 }
 
-export const ProductCard = ({ datum }: ProductProps) => {
+export const ProductCard = ({ datum }: ProductCardProps) => {
   const { addToCart, products } = useCartContext();
 
   const isInCart = !!products?.find((product) => datum.name === product.name);
