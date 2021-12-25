@@ -1,10 +1,10 @@
-import React from "react"
-import { CheckoutList } from "./CheckoutList"
-import { useCart } from "../CartContext/CartContext"
-import { CheckoutForm } from "./CheckoutForm"
+import React from "react";
+import { CheckoutList } from "./CheckoutList";
+import { useCartContext } from "../CartContext/CartContext";
+import { CheckoutForm } from "./CheckoutForm";
 
 export const Checkout = () => {
-  const { products, totalPrice } = useCart()
+  const { products, totalPrice } = useCartContext();
 
   return (
     <section className="nes-container with-title">
@@ -17,5 +17,5 @@ export const Checkout = () => {
       <p>Enter your payment credentials:</p>
       <CheckoutForm />
     </section>
-  )
-}
+  );
+};
