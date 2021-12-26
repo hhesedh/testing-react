@@ -1,5 +1,4 @@
-import { fireEvent } from "@testing-library/react";
-import React from "react";
+import { fireEvent, screen } from "@testing-library/react";
 import { Header } from "./Header";
 
 jest.mock("./CartWidget", () => ({
@@ -14,7 +13,7 @@ describe("Header", () => {
   });
 
   it("navigates to / on header title click", () => {
-    const { history, ...screen } = renderWithRouter(() => <Header />);
+    const { history } = renderWithRouter(() => <Header />);
     fireEvent.click(screen.getByText("Goblin Store"));
     expect(history.location.pathname).toEqual("/");
   });

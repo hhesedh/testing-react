@@ -1,4 +1,4 @@
-import { fireEvent } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import { CartWidget } from "./CartWidget";
 
 describe("CartWidget", () => {
@@ -14,7 +14,7 @@ describe("CartWidget", () => {
     expect(container.innerHTML).toMatch("1");
   });
   it("navigates to cart summary page on click", () => {
-    const { history, ...screen } = renderWithRouter(() => <CartWidget />);
+    const { history } = renderWithRouter(() => <CartWidget />);
     fireEvent.click(screen.getByRole("link"));
 
     expect(history.location.pathname).toEqual("/cart");
