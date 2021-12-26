@@ -1,14 +1,10 @@
 import React from "react";
-import { submitCheckout, CheckoutPayload } from "../utils/api";
-import { useCartContext } from "../CartContext/CartContext";
 import { FormField } from "./FormField";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
 interface CheckoutFormProps {
-  submit?: (
-    data: CheckoutPayload
-  ) => Promise<{ orderId: string | undefined; success?: boolean }>;
+  submit?: () => Promise<void>;
 }
 
 const validationSchema = yup.object().shape({
@@ -20,7 +16,7 @@ const validationSchema = yup.object().shape({
       /^\d{4}\s\d{4}\s\d{4}\s\d{4}$/,
       "Card should have xxxx xxxx xxxx xxxx format"
     ),
-  expDate: yup.date().required(),
+  expDate: yup.date().nullable().default(null).required(),
   cvv: yup
     .string()
     .required()
@@ -28,30 +24,21 @@ const validationSchema = yup.object().shape({
 });
 
 export const CheckoutForm = ({
-  submit = submitCheckout,
+  submit = async () => {},
 }: CheckoutFormProps) => {
-  const { clearCart, products } = useCartContext();
   const { register, errors, handleSubmit } = useForm({
     mode: "onBlur",
     validationSchema,
   });
 
-  const onSubmit = handleSubmit(async (data) => {
-    const { orderId } = await submit({
-      products,
-    });
-    clearCart();
-    window.location.assign(`/order/?orderId=${orderId}`);
-  });
-
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={handleSubmit(submit)}>
       <FormField
         placeholder="John Smith"
         type="text"
         name="name"
-        label="Cardholder's Name"
-        ref={register}
+        label="Cardholders Name"
+        inputRef={register}
         errors={errors.name}
       />
       <FormField
@@ -70,14 +57,14 @@ export const CheckoutForm = ({
               .substr(0, 19) || ""
           );
         }}
-        ref={register}
+        inputRef={register}
         errors={errors.cardNumber}
       />
       <FormField
         type="month"
         name="expDate"
         label="Expiration Date"
-        ref={register}
+        inputRef={register}
         errors={errors.expDate}
       />
       <FormField
@@ -85,7 +72,7 @@ export const CheckoutForm = ({
         type="number"
         name="cvv"
         label="CVV"
-        ref={register}
+        inputRef={register}
         errors={errors.cvv}
         normalize={(value) => {
           return value.substr(0, 3);
