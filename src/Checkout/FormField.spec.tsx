@@ -1,9 +1,4 @@
-import {
-  render,
-  fireEvent,
-  screen,
-  getByLabelText,
-} from "@testing-library/react";
+import { render, fireEvent, screen } from "@testing-library/react";
 import { FormField } from "./FormField";
 describe("FormField", () => {
   it("renders correctly", () => {
