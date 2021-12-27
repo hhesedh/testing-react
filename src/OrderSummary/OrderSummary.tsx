@@ -1,37 +1,22 @@
-import React, { useState } from "react"
-import { Loader } from "../shared/Loader"
-import { getOrder } from "../utils/api"
-import { Link } from "react-router-dom"
-import { Product } from "../shared/types"
+import { Loader } from "../shared/Loader";
+import { Link } from "react-router-dom";
+import { useOrder } from "./useOrder";
 
-export interface Order {
-  products: Product[]
+interface OrderSummaryProps {
+  useOrderHook?: typeof useOrder;
 }
 
-const getOrderId = () => {
-  const urlParams = new URLSearchParams(window.location.search)
-  return urlParams.get("orderId")
-}
+export const OrderSummary = ({
+  useOrderHook = useOrder,
+}: OrderSummaryProps) => {
+  const { isLoading, order } = useOrderHook();
 
-export const OrderSummary = () => {
-  const [order, setOrder] = useState<Order>()
-
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const orderId = getOrderId()
-      if (!orderId) {
-        return
-      }
-      const order = await getOrder(orderId)
-      if (order.success) {
-        setOrder(order)
-      }
-    }
-    fetchData()
-  }, [])
+  if (isLoading) {
+    return <Loader />;
+  }
 
   if (!order) {
-    return <Loader />
+    return <div>Couldn't load order info.</div>;
   }
 
   return (
@@ -40,7 +25,7 @@ export const OrderSummary = () => {
       <div className="nes-container is-rounded order-summary-container">
         <ul className="nes-list is-circle">
           {order.products.map((product) => {
-            return <li key={product.name}>{product.name}</li>
+            return <li key={product.name}>{product.name}</li>;
           })}
         </ul>
       </div>
@@ -48,5 +33,5 @@ export const OrderSummary = () => {
         <button className="nes-btn is-primary">Back to the store</button>
       </Link>
     </section>
-  )
-}
+  );
+};
