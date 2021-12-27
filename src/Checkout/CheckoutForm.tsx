@@ -54,7 +54,7 @@ export const CheckoutForm = ({
               .replace(/\s/g, "")
               .match(/.{1,4}/g)
               ?.join(" ")
-              .substr(0, 19) || ""
+              .substring(0, 19) || ""
           );
         }}
         inputRef={register}
@@ -75,7 +75,7 @@ export const CheckoutForm = ({
         inputRef={register}
         errors={errors.cvv}
         normalize={(value) => {
-          return value.substr(0, 3);
+          return value.substring(0, 3);
         }}
       />
       <button className="nes-btn is-primary">Place order</button>
