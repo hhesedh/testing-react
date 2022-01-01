@@ -44,7 +44,7 @@ describe("CheckoutForm", () => {
 
         fireEvent.click(screen.getByText("Place order"));
 
-        await waitFor(() => {
+        await waitFor(async () => {
           expect(mockSubmit).toHaveBeenCalled();
         });
       });
