@@ -1,28 +1,26 @@
-import React from "react"
+import React from "react";
+import { render } from "@testing-library/react";
+import { CartProvider, CartContext } from "./CartContext";
 
 describe("CartProvider", () => {
   describe("when 'addToCart' is called", () => {
-    it.todo("adds product to products array")
-    it.todo("saves products in local storage")
-  })
+    it("adds product to products array", () => {
+      const mockChildrenFunction = jest.fn(() => null);
+      const cartHookReturnValue = {
+        products: [],
+        totalPrice: () => 0,
+        addToCart: () => {},
+        removeFromCart: () => {},
+        clearCart: () => {},
+      };
 
-  describe("with products", () => {
-    describe("when 'clearCart' is called", () => {
-      it.todo("returns empty array for products")
-      it.todo("removes products from local storage")
-    })
+      render(
+        <CartProvider useCartHook={() => cartHookReturnValue}>
+          <CartContext.Consumer>{mockChildrenFunction}</CartContext.Consumer>
+        </CartProvider>
+      );
 
-    describe("when 'removeFromCart' is called", () => {
-      it.todo("removes product from products array")
-      it.todo("removes product from local storage")
-    })
-  })
-
-  describe("with products in localStorage", () => {
-    it.todo("loads products from localStorage")
-  })
-
-  describe("with empty localStorage", () => {
-    it.todo("products is empty array")
-  })
-})
+      expect(mockChildrenFunction).toHaveBeenCalledWith(cartHookReturnValue);
+    });
+  });
+});
