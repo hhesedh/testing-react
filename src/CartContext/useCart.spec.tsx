@@ -9,9 +9,6 @@ const spySetItem = () => {
 describe("useCart", () => {
   afterEach(() => {
     localStorage.clear();
-  });
-
-  afterEach(() => {
     jest.restoreAllMocks();
   });
 
