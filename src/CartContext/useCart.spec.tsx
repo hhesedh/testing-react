@@ -2,11 +2,10 @@ import { useCart } from "./useCart";
 import { renderHook, act } from "@testing-library/react-hooks";
 import { Product } from "../shared/types";
 
-const spySetItem = () => {
-  jest.spyOn(Object.getPrototypeOf(localStorage), "setItem");
-};
-
 describe("useCart", () => {
+  beforeEach(() => {
+    jest.spyOn(Object.getPrototypeOf(localStorage), "setItem");
+  });
   afterEach(() => {
     localStorage.clear();
     jest.restoreAllMocks();
@@ -38,8 +37,6 @@ describe("useCart", () => {
       };
       const { result } = renderHook(useCart);
 
-      spySetItem();
-
       act(() => {
         result.current.addToCart(product);
       });
@@ -61,7 +58,6 @@ describe("useCart", () => {
       };
       localStorage.setItem("products", JSON.stringify([product]));
 
-      spySetItem();
       const { result } = renderHook(useCart);
 
       act(() => {
@@ -98,8 +94,6 @@ describe("useCart", () => {
       };
       localStorage.setItem("products", JSON.stringify([product, product]));
       const { result } = renderHook(useCart);
-
-      spySetItem();
 
       act(() => {
         result.current.clearCart();
