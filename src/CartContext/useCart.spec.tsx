@@ -47,6 +47,25 @@ describe("useCart", () => {
         JSON.stringify([product])
       );
     });
+
+    it("no adds item to the cart if item in localStorage", () => {
+      const product: Product = {
+        name: "Product foo",
+        price: 0,
+        image: "image.jpg",
+      };
+
+      localStorage.setItem("products", JSON.stringify([product]));
+
+      const { result } = renderHook(useCart);
+
+      act(() => {
+        result.current.addToCart(product);
+      });
+
+      expect(result.current.products).toEqual([product]);
+      expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe("#removeFromCart", () => {
