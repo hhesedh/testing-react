@@ -24,6 +24,10 @@ Object.defineProperty(window, "localStorage", {
   value: localStorageMock,
 });
 
+const spySetItem = () => {
+  jest.spyOn(localStorageMock, "setItem");
+};
+
 describe("useCart", () => {
   afterEach(() => {
     localStorageMock.clear();
@@ -59,7 +63,7 @@ describe("useCart", () => {
       };
       const { result } = renderHook(useCart);
 
-      jest.spyOn(localStorageMock, "setItem");
+      spySetItem();
 
       act(() => {
         result.current.addToCart(product);
@@ -70,8 +74,6 @@ describe("useCart", () => {
         "products",
         JSON.stringify([product])
       );
-
-      // spy.mockRestore();
     });
   });
 
@@ -84,8 +86,7 @@ describe("useCart", () => {
       };
       localStorageMock.setItem("products", JSON.stringify([product]));
 
-      jest.spyOn(localStorageMock, "setItem");
-
+      spySetItem();
       const { result } = renderHook(useCart);
 
       act(() => {
@@ -123,7 +124,7 @@ describe("useCart", () => {
       localStorageMock.setItem("products", JSON.stringify([product, product]));
       const { result } = renderHook(useCart);
 
-      jest.spyOn(localStorageMock, "setItem");
+      spySetItem();
 
       act(() => {
         result.current.clearCart();
