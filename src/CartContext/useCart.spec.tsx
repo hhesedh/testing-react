@@ -2,35 +2,13 @@ import { useCart } from "./useCart";
 import { renderHook, act } from "@testing-library/react-hooks";
 import { Product } from "../shared/types";
 
-const localStorageMock = (() => {
-  let store: { [key: string]: string } = {};
-  return {
-    clear: () => {
-      store = {};
-    },
-    getItem: (key: string) => {
-      return store[key] || null;
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    setItem: (key: string, value: string) => {
-      store[key] = value ? value.toString() : "";
-    },
-  };
-})();
-
-Object.defineProperty(window, "localStorage", {
-  value: localStorageMock,
-});
-
 const spySetItem = () => {
-  jest.spyOn(localStorageMock, "setItem");
+  jest.spyOn(Object.getPrototypeOf(localStorage), "setItem");
 };
 
 describe("useCart", () => {
   afterEach(() => {
-    localStorageMock.clear();
+    localStorage.clear();
   });
 
   afterEach(() => {
@@ -46,7 +24,7 @@ describe("useCart", () => {
           image: "image.jpg",
         },
       ];
-      localStorageMock.setItem("products", JSON.stringify(products));
+      localStorage.setItem("products", JSON.stringify(products));
 
       const { result } = renderHook(useCart);
 
@@ -70,7 +48,7 @@ describe("useCart", () => {
       });
 
       expect(result.current.products).toEqual([product]);
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
+      expect(localStorage.setItem).toHaveBeenCalledWith(
         "products",
         JSON.stringify([product])
       );
@@ -84,7 +62,7 @@ describe("useCart", () => {
         price: 0,
         image: "image.jpg",
       };
-      localStorageMock.setItem("products", JSON.stringify([product]));
+      localStorage.setItem("products", JSON.stringify([product]));
 
       spySetItem();
       const { result } = renderHook(useCart);
@@ -95,7 +73,7 @@ describe("useCart", () => {
 
       expect(result.current.products).toEqual([]);
 
-      expect(localStorageMock.setItem).toHaveBeenCalledWith("products", "[]");
+      expect(localStorage.setItem).toHaveBeenCalledWith("products", "[]");
     });
   });
 
@@ -106,7 +84,7 @@ describe("useCart", () => {
         price: 21,
         image: "image.jpg",
       };
-      localStorageMock.setItem("products", JSON.stringify([product, product]));
+      localStorage.setItem("products", JSON.stringify([product, product]));
 
       const { result } = renderHook(useCart);
 
@@ -121,7 +99,7 @@ describe("useCart", () => {
         price: 21,
         image: "image.jpg",
       };
-      localStorageMock.setItem("products", JSON.stringify([product, product]));
+      localStorage.setItem("products", JSON.stringify([product, product]));
       const { result } = renderHook(useCart);
 
       spySetItem();
@@ -131,7 +109,7 @@ describe("useCart", () => {
       });
 
       expect(result.current.products).toEqual([]);
-      expect(localStorageMock.setItem).toHaveBeenCalledWith("products", "[]");
+      expect(localStorage.setItem).toHaveBeenCalledWith("products", "[]");
     });
   });
 });
