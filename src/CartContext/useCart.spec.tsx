@@ -14,9 +14,9 @@ const localStorageMock = (() => {
     removeItem: (key: string) => {
       delete store[key];
     },
-    setItem: jest.fn((key: string, value: string) => {
+    setItem: (key: string, value: string) => {
       store[key] = value ? value.toString() : "";
-    }),
+    },
   };
 })();
 
@@ -27,6 +27,10 @@ Object.defineProperty(window, "localStorage", {
 describe("useCart", () => {
   afterEach(() => {
     localStorageMock.clear();
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe("on mount", () => {
@@ -55,6 +59,8 @@ describe("useCart", () => {
       };
       const { result } = renderHook(useCart);
 
+      jest.spyOn(localStorageMock, "setItem");
+
       act(() => {
         result.current.addToCart(product);
       });
@@ -64,6 +70,8 @@ describe("useCart", () => {
         "products",
         JSON.stringify([product])
       );
+
+      // spy.mockRestore();
     });
   });
 
@@ -76,6 +84,8 @@ describe("useCart", () => {
       };
       localStorageMock.setItem("products", JSON.stringify([product]));
 
+      jest.spyOn(localStorageMock, "setItem");
+
       const { result } = renderHook(useCart);
 
       act(() => {
@@ -83,6 +93,7 @@ describe("useCart", () => {
       });
 
       expect(result.current.products).toEqual([]);
+
       expect(localStorageMock.setItem).toHaveBeenCalledWith("products", "[]");
     });
   });
@@ -95,6 +106,7 @@ describe("useCart", () => {
         image: "image.jpg",
       };
       localStorageMock.setItem("products", JSON.stringify([product, product]));
+
       const { result } = renderHook(useCart);
 
       expect(result.current.totalPrice()).toEqual(42);
@@ -110,6 +122,8 @@ describe("useCart", () => {
       };
       localStorageMock.setItem("products", JSON.stringify([product, product]));
       const { result } = renderHook(useCart);
+
+      jest.spyOn(localStorageMock, "setItem");
 
       act(() => {
         result.current.clearCart();
